@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import moment from "moment";
 
 function EditTask() {
 	const { id } = useParams();
 	const inputDom = useRef(null);
 	const memberDom = useRef(null);
+	const dateDom = useRef(null);
 	const checkBoxDom = useRef(null);
 
 	const [toBeEdited, setToBeEdited] = useState(null);
@@ -24,6 +26,7 @@ function EditTask() {
 			if (taskData.length > 0) {
 				inputDom.current.value = taskData[0].task_name;
 				memberDom.current.value = taskData[0].member_name;
+				dateDom.current.value = moment(taskData[0].date).format("YYYY-MM-DD");
 				checkBoxDom.current.checked = taskData[0].completed;
 			}
 		} catch (error) {
@@ -35,12 +38,14 @@ function EditTask() {
 		e.preventDefault();
 		const updatedName = inputDom.current.value;
 		const updatedMember = memberDom.current.value;
+		const updatedDate = dateDom.current.value;
 		const updatedCompleted = checkBoxDom.current.checked;
 
 		try {
 			await axios.patch(`http://localhost:5000/task/${id}`, {
 				name: updatedName,
 				member: updatedMember,
+				date: updatedDate,
 				completed: updatedCompleted,
 			});
 			console.log("Task updated successfully");
@@ -61,7 +66,7 @@ function EditTask() {
 						<p className="task-edit-id">{id}</p>
 					</div>
 					<div className="form-control">
-						<label htmlFor="name">Task Name:-</label>
+						<label htmlFor="name">Task Name:</label>
 						<input
 							ref={inputDom}
 							type="text"
@@ -71,13 +76,24 @@ function EditTask() {
 						/>
 					</div>
 					<div className="form-control">
-						<label htmlFor="name">Complete By:-</label>
+						<label htmlFor="name">Member:</label>
 						<input
 							ref={memberDom}
 							type="text"
 							name="member"
 							className="task-edit-name"
 							defaultValue={toBeEdited ? toBeEdited.member_name : ""}
+						/>
+					</div>
+					<div className="form-control">
+						<label htmlFor="name">Date:</label>
+						<input
+							ref={dateDom}
+							type="date"
+							className="task-edit-name"
+							defaultValue={
+								toBeEdited ? moment(toBeEdited.date).format("YYYY-MM-DD") : ""
+							}
 						/>
 					</div>
 					<div className="form-control">
