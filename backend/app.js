@@ -1,24 +1,23 @@
-
-console.clear();
+require("dotenv").config();
 const express = require("express");
-const mysql = require("mysql2");
+// const mysql = require("mysql2");
 const cors = require("cors");
 const app = express();
+const pool = require("./connect.js");
 const port = 5000;
 app.use(cors());
-// mysql connection
-const { connect } = require("./connect");
 
 // table schema
 app.get("/install", (req, res) => {
-	const installTable = `CREATE TABLE IF NOT EXISTS todo (
-      id INT NOT NULL AUTO_INCREMENT,
-      task_name VARCHAR(255),
-      date DATE,
-      completed BOOLEAN DEFAULT false,
-      PRIMARY KEY (id)
-    )`;
-	connect.query(installTable, (err) => {
+	const installTable = `CREATE TABLE IF NOT EXISTS evangadiForum (
+    id INT NOT NULL AUTO_INCREMENT,
+    task_name VARCHAR(255) not null,
+	member_name VARCHAR(255) not null,
+    date DATE,
+    completed BOOLEAN DEFAULT false,
+    PRIMARY KEY (id)
+  )`;
+	pool.query(installTable, (err) => {
 		if (err) {
 			console.log(err);
 		} else {
@@ -31,14 +30,15 @@ app.use(express.json());
 
 // create task
 app.post("/create", (req, res) => {
-	const { name, date } = req.body;
+	const { name, member, date } = req.body;
 	console.log(req.body);
 	if (!name) {
 		return res.status(401).send("Please provide data");
 	}
-	const createTask = `INSERT INTO todo (task_name, date) VALUES ('${name}', '${date}')`;
+	const createTask = `INSERT INTO evangadiForum (task_name, member_name, date) VALUES ('${name}', '${member}', '${date}')`;
 
-	connect.query(createTask, (err, result) => {
+
+	pool.query(createTask, (err, result) => {
 		if (err) {
 			console.log(err);
 			return res.send(err);
@@ -48,11 +48,10 @@ app.post("/create", (req, res) => {
 	});
 });
 
-
 // get all tasks
 app.get("/all-tasks", (req, res) => {
-	const allTasks = `SELECT * FROM todo`;
-	connect.query(allTasks, (err, result) => {
+	const allTasks = `SELECT * FROM evangadiForum`;
+	pool.query(allTasks, (err, result) => {
 		if (err) {
 			return res.status(500).json({ msg: err });
 		} else {
@@ -62,11 +61,10 @@ app.get("/all-tasks", (req, res) => {
 });
 
 // get single task
-app.get("/task/:id", (req, res) => {
+app.get("/task/:id", async (req, res) => {
 	const id = req.params.id;
-
-	const singleTask = `SELECT * FROM todo WHERE id = ?`;
-	connect.query(singleTask, [id], (err, result) => {
+	const singleTask = `SELECT * FROM evangadiForum WHERE id = ?`;
+	pool.query(singleTask, [id], (err, result) => {
 		if (err) {
 			return res.status(500).json({ msg: err });
 		}
@@ -74,7 +72,7 @@ app.get("/task/:id", (req, res) => {
 		if (result.length < 1) {
 			return res.status(404).send(`No task with id: ${id}`);
 		} else {
-			return res.status(200).json({ result });
+			return res.status(200).json(result[0]);
 		}
 	});
 });
@@ -82,17 +80,18 @@ app.get("/task/:id", (req, res) => {
 // update task
 app.patch("/task/:id", (req, res) => {
 	const id = req.params.id;
-	const { name, completed } = req.body;
+	const { name, member, completed } = req.body;
 
 	let completedValue = completed ? 1 : 0;
 
-	const updateTask = `UPDATE todo
+	const updateTask = `UPDATE evangadiForum
     SET ${name ? `task_name = ?,` : ""}
+        ${member ? `member_name = ?,` : ""}
         completed = ?
     WHERE id = ?`;
 	console.log(updateTask);
 
-	connect.query(updateTask, [name, completedValue, id], (err, result) => {
+	pool.query(updateTask, [name, member, completedValue, id], (err, result) => {
 		if (err) {
 			console.log(err);
 			return res.send(err.message);
@@ -100,8 +99,8 @@ app.patch("/task/:id", (req, res) => {
 			if (result.affectedRows === 0) {
 				return res.status(404).send(`No task with id: ${id}`);
 			}
-			const singleTask = `SELECT * FROM todo WHERE id = ?`;
-			connect.query(singleTask, [id], (err, result) => {
+			const singleTask = `SELECT * FROM evangadiForum WHERE id = ?`;
+			pool.query(singleTask, [id], (err, result) => {
 				if (err) {
 					return res.status(500).json({ msg: err });
 				} else {
@@ -116,9 +115,9 @@ app.patch("/task/:id", (req, res) => {
 app.delete("/task/:id", (req, res) => {
 	const id = req.params.id;
 
-	const deleteTask = `DELETE FROM todo WHERE id = ?`;
+	const deleteTask = `DELETE FROM evangadiForum WHERE id = ?`;
 
-	connect.query(deleteTask, [id], (err, result) => {
+	pool.query(deleteTask, [id], (err, result) => {
 		if (err) {
 			console.log(err);
 			return res.send(err.message);
@@ -136,7 +135,8 @@ app.listen(5000, (err) => {
 		console.log(err.message);
 	} else {
 		console.log(`http://localhost:${port}`);
-		console.log("Yes, I am connected");
-		return "Yes, I am connected";
+		console.log("connected with port 5000");
 	}
 });
+
+module.exports = pool;

@@ -1,14 +1,15 @@
-
-
-//----------------------
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 function Task() {
-	const inputDom = useRef(null);
+	const taskInputRef = useRef(null);
+	const memberInputRef = useRef(null);
+	const dateInputRef = useRef(null);
+
 	const [tasks, setTasks] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [selectedDate, setSelectedDate] = useState(null);
@@ -36,22 +37,26 @@ function Task() {
 		e.preventDefault();
 		try {
 			setLoading(true);
-			const value = inputDom.current.value;
+			const value = taskInputRef.current.value;
+			const member = memberInputRef.current.value;
 			const date = selectedDate
-				? selectedDate.toISOString().slice(0, 10)
-				: null; // Convert date to ISO string format
+				? moment(selectedDate).format("YYYY-MM-DD")
+				: null; // Format date using Moment.js
 
 			if (value) {
 				await axios.post("http://localhost:5000/create", {
 					name: value,
+					member: member,
 					date: date, // Set the date value in the request body
 				});
 				console.log(value);
+				console.log(member);
 				console.log(date);
 			}
 
 			fetchTask();
-			inputDom.current.value = "";
+			taskInputRef.current.value = "";
+			memberInputRef.current.value = "";
 		} catch (error) {
 			console.log(error.message);
 			setLoading(false);
@@ -74,30 +79,38 @@ function Task() {
 	return (
 		<>
 			<form onSubmit={handleSubmit} className="task-form">
-				<h4>Todo List</h4>
+				<h4>Evangadi Forum Project &#128170; follow-up list &#10084;</h4>
 				<div className="form-control">
-				
 					<input
-						ref={inputDom}
+						ref={taskInputRef}
 						type="text"
 						name="name"
 						className="task-input"
-						placeholder="e.g. write an email"
+						placeholder="e.g. create the project"
 					/>
-					<div className="form-control">
-						<label htmlFor="date"></label>
-						<DatePicker
-							placeholderText="Date"
-							name="date"
-							selected={selectedDate}
-							onChange={(date) => setSelectedDate(date)}
-							className="task-date-input form-control"
-						/>
-					</div>
-					<button type="submit" className="btn submit-btn">
-						Add
-					</button>
+					<input
+						ref={memberInputRef}
+						type="text"
+						name="member"
+						className="task-input"
+						placeholder="e.g. Natnael"
+					/>
 				</div>
+
+				<div className="form-control">
+					<label htmlFor="date">Expected Completed date</label>
+					<DatePicker
+						ref={dateInputRef}
+						selected={selectedDate}
+						onChange={(date) => setSelectedDate(date)}
+						className="task-date-input form-control"
+						dateFormat="MMMM d, yyyy" // Specify the desired date format
+					/>
+				</div>
+				<button type="submit" className="btn submit-btn">
+					Add
+				</button>
+
 				<div className="form-alert"></div>
 			</form>
 
@@ -106,29 +119,32 @@ function Task() {
 					<p className="loading"></p>
 				) : (
 					<div className="tasks">
-						{tasks.map((todo) => (
+						{tasks.map((evangadiForum) => (
 							<div
-								key={todo.id}
+								key={evangadiForum.id}
 								className={`single-task ${
-									todo.completed ? "task-completed" : ""
+									evangadiForum.completed ? "task-completed" : ""
 								}`}
 							>
 								<h5>
-									<span>
+									{/* <span>
 										<i className="far fa-check-circle"></i>
-									</span>
-									{todo.task_name}
+									</span> Task:- */}
+									{evangadiForum.task_name}
 								</h5>
-								<h5>{new Date(todo.date).toLocaleDateString()}</h5>
-
+								<h5>/By:-{evangadiForum.member_name}/</h5>
+								<h5 className="date">
+									{moment(evangadiForum.date).format("MMMM D, YYYY")}
+								</h5>{" "}
+								{/* Format date using Moment.js */}
 								<div className="task-links">
-									<Link to={`/task/${todo.id}`} className="edit-link">
-										<i className="fas fa-edit"></i>
+									<Link to={`/task/${evangadiForum.id}`} className="edit-link">
+										<button className="edit">Edit</button>
 									</Link>
 
 									<button
 										onClick={() => {
-											handleDelete(todo.id);
+											handleDelete(evangadiForum.id);
 										}}
 										type="button"
 										className="delete-btn"

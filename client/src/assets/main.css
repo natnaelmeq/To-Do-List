@@ -228,6 +228,7 @@ textarea {
 .submit-btn {
 	width: 100%;
 	margin-top: 1rem;
+	
 }
 @media screen and (min-width: 576px) {
 	.form-control {
@@ -355,6 +356,7 @@ form > :last-child {
 }
 .single-task h5 {
 	margin-bottom: 0;
+	font-size: 14px;
 }
 .single-task span {
 	display: inline-block;
@@ -363,6 +365,7 @@ form > :last-child {
 	margin-left: -1.25rem;
 	margin-right: 1.5rem;
 }
+.date{font-size: 10px;}
 .single-task .fa-check-circle {
 	font-size: 1rem;
 	color: var(--green-dark);
