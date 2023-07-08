@@ -182,7 +182,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-
+app.get("/", (request, response) => response.status(200).send("hello world"));
 // table schema
 app.get("/install", (req, res) => {
 	const installTable = `CREATE TABLE IF NOT EXISTS evangadiForum (
