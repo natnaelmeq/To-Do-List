@@ -98,7 +98,7 @@ function Task() {
 				</div>
 
 				<div className="form-control">
-					<label htmlFor="date">Expected Completed date</label>
+					<label htmlFor="date">Date Completed</label>
 					<DatePicker
 						ref={dateInputRef}
 						selected={selectedDate}
