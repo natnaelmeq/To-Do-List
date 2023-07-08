@@ -183,7 +183,7 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-const CyclicAPI = require(`https://dark-rose-katydid-wear.cyclic.app/`);
+const CyclicAPI = require("https://dark-rose-katydid-wear.cyclic.app/"); // Update with the correct package name or module path for CyclicAPI
 const api = new CyclicAPI();
 
 // table schema
