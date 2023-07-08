@@ -183,9 +183,6 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-const CyclicAPI = require("https://dark-rose-katydid-wear.cyclic.app/"); // Update with the correct package name or module path for CyclicAPI
-const api = new CyclicAPI();
-
 // table schema
 app.get("/install", (req, res) => {
 	const installTable = `CREATE TABLE IF NOT EXISTS evangadiForum (
@@ -197,15 +194,14 @@ app.get("/install", (req, res) => {
     PRIMARY KEY (id)
   )`;
 
-	api
-		.query(installTable)
-		.then(() => {
-			res.send("Table created");
-		})
-		.catch((err) => {
+	pool.query(installTable, (err) => {
+		if (err) {
 			console.log(err);
 			res.send(err);
-		});
+		} else {
+			res.send("Table created");
+		}
+	});
 });
 
 // create task
@@ -219,48 +215,45 @@ app.post("/create", (req, res) => {
 	const createTask = `INSERT INTO evangadiForum (task_name, member_name, date) VALUES (?, ?, ?)`;
 	const createValues = [name, member, date];
 
-	api
-		.query(createTask, createValues)
-		.then(() => {
-			res.status(201).send("Task created");
-		})
-		.catch((err) => {
+	pool.query(createTask, createValues, (err) => {
+		if (err) {
 			console.log(err);
 			res.send(err);
-		});
+		} else {
+			res.status(201).send("Task created");
+		}
+	});
 });
 
 // get all tasks
 app.get("/all-tasks", (req, res) => {
 	const allTasks = `SELECT * FROM evangadiForum`;
 
-	api
-		.query(allTasks)
-		.then((result) => {
-			res.status(200).json({ result });
-		})
-		.catch((err) => {
+	pool.query(allTasks, (err, result) => {
+		if (err) {
 			res.status(500).json({ msg: err });
-		});
+		} else {
+			res.status(200).json({ result });
+		}
+	});
 });
 
 // get single task
-app.get("/task/:id", async (req, res) => {
+app.get("/task/:id", (req, res) => {
 	const id = req.params.id;
 	const singleTask = `SELECT * FROM evangadiForum WHERE id = ?`;
 
-	api
-		.query(singleTask, [id])
-		.then((result) => {
+	pool.query(singleTask, [id], (err, result) => {
+		if (err) {
+			res.status(500).json({ msg: err });
+		} else {
 			if (result.length < 1) {
 				return res.status(404).send(`No task with id: ${id}`);
 			} else {
 				res.status(200).json(result[0]);
 			}
-		})
-		.catch((err) => {
-			res.status(500).json({ msg: err });
-		});
+		}
+	});
 });
 
 // update task
@@ -279,31 +272,29 @@ app.patch("/task/:id", (req, res) => {
 
 	const updateValues = [name, member, date, completedValue, id];
 
-	api
-		.query(updateTask, updateValues)
-		.then((result) => {
+	pool.query(updateTask, updateValues, (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err.message);
+		} else {
 			if (result.affectedRows === 0) {
 				return res.status(404).send(`No task with id: ${id}`);
 			}
 
 			const singleTask = `SELECT * FROM evangadiForum WHERE id = ?`;
-			api
-				.query(singleTask, [id])
-				.then((result) => {
+			pool.query(singleTask, [id], (err, result) => {
+				if (err) {
+					res.status(500).json({ msg: err });
+				} else {
 					const formattedResult = {
 						...result[0],
 						date: moment(result[0].date).format("YYYY-MM-DD"),
 					};
 					res.status(200).json(formattedResult);
-				})
-				.catch((err) => {
-					res.status(500).json({ msg: err });
-				});
-		})
-		.catch((err) => {
-			console.log(err);
-			res.send(err.message);
-		});
+				}
+			});
+		}
+	});
 });
 
 // delete task
@@ -311,18 +302,17 @@ app.delete("/task/:id", (req, res) => {
 	const id = req.params.id;
 	const deleteTask = `DELETE FROM evangadiForum WHERE id = ?`;
 
-	api
-		.query(deleteTask, [id])
-		.then((result) => {
+	pool.query(deleteTask, [id], (err, result) => {
+		if (err) {
+			console.log(err);
+			res.send(err.message);
+		} else {
 			if (result.affectedRows === 0) {
 				return res.status(404).send(`No task with id: ${id}`);
 			}
 			res.status(200).send(`Task with id ${id} deleted successfully.`);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.send(err.message);
-		});
+		}
+	});
 });
 
 app.listen(port, (err) => {
@@ -333,10 +323,6 @@ app.listen(port, (err) => {
 		console.log("Connected with port 5000");
 	}
 });
-
-module.exports = api;
-
-
 
 
 
