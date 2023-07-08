@@ -48,7 +48,7 @@ function EditTask() {
 				date: updatedDate,
 				completed: updatedCompleted,
 			});
-			console.log("Task updated successfully");
+			(alert("Thank you , Successfully Updated") );
 			// Redirect or show a success message
 		} catch (error) {
 			console.log(error.message);
