@@ -1,0 +1,49 @@
+.login_container {
+	max-width: 400px;
+	
+	padding: 20px;
+	background-color: white;
+	
+	border-radius: 5px;
+	margin: 100px auto 100px ;
+	height: 420px;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+label {
+	margin-bottom: 5px;
+}
+
+input {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+
+.signIn:hover {
+	background-color: rgb(231, 116, 22);
+}
+.signIn {
+	margin: auto !important;
+}
+
+/* button:hover {
+	background-color: rgb(223, 77, 77);
+} */
+
+.link {
+	text-align: center;
+	margin-top: 10px;
+	color: #f6912b;
+	font-size: 18px;
+}

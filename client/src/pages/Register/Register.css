@@ -1,0 +1,39 @@
+.sign-up-container {
+    max-width: 400px;
+    margin: 0 auto 200px;
+    padding: 5px 40px;
+    border: 1px solid #ccc;
+    background-color: #e9d2d231; 
+    margin-top: 100px;
+    height: 400px; 
+    border-radius: 10px;
+    
+}
+.sign-up-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.sign-up-container form {
+    margin-bottom: 10px;
+}.sign-up-container button {
+    width: 25%;
+}
+
+.sign-up-container a {
+    display: block;
+    text-align: center;
+}
+.agree_andjoin:hover {
+    background-color: orange;
+}
+.register {
+	background-color: #554ed9;
+	border-radius: 5px;
+	color: white;
+	height: 45px;
+	border: #ccc;
+	width: 130px !important;
+    margin: auto !important;
+}
+.color_orange{
+    color: orange;}

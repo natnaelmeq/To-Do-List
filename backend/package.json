@@ -1,16 +1,27 @@
 {
-	"name": "backend",
-	"description": "Evangadi",
-	"scripts": {},
-	"engines": {
-		"node": "18"
+	"name": "evangadi-forum-project",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.jsx",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "concurrently \"nodemon server.jsx\" \"npm start --prefix client\"",
+		"start": "node server.jsx"
 	},
+	"author": "Evangadi-Group-2-Jan-2023",
+	"license": "ISC",
 	"dependencies": {
+		"@material-ui/icons": "^4.11.3",
+		"axios": "^1.4.0",
+		"bcryptjs": "^2.4.3",
+		"bootstrap": "^5.3.1",
+		"concurrently": "^8.2.0",
 		"cors": "^2.8.5",
 		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
+		"jsonwebtoken": "^9.0.1",
 		"moment": "^2.29.4",
-		"momment": "^0.0.1",
-		"mysql2": "^3.3.3"
+		"mysql2": "^3.4.3",
+		"react-bootstrap": "^2.9.0-beta.0"
 	}
 }

@@ -1,0 +1,51 @@
+.headWrapper {
+  background-color: #d1f0d8;
+  height: 60px;
+  z-index: 1;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  
+}
+.mainWrapper{
+	width: 70%;
+}
+
+a {
+  text-decoration: none;
+  color: #333333;
+}
+
+.signIn {
+  background-color: #554ed9;
+  border-radius: 5px;
+  color: white;
+  height: 45px;
+  border: none;
+  width: 130px;
+  padding-top: 7px;
+  
+
+}
+.signout{  background-color: #9b3d61;
+  border-radius: 5px;
+  color: black;
+  height: 45px;
+  border: none;
+  width: 130px;
+  padding-top: 7px;}
+
+.signIn:hover {
+  background-color: rgb(231, 116, 22);
+}
+
+/* Responsive Heading */
+@media (max-width: 768px) {
+  .headWrapper h4 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 576px) {
+  .headWrapper h4 {
+    font-size: 16px;
+  }
+}

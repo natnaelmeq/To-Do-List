@@ -1,0 +1,42 @@
+.main-wrapper2 {
+	background-color: #3b455a;
+    margin-right: 100px;
+}
+
+.wrapper {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 20px;
+	/* padding-bottom: 80px; */
+	/* background-color:#3B455A; */
+	color: #ccc;
+}
+.list li {
+	list-style: none;
+	align-items: right;
+	padding: 5px 0;
+	font-size: 12px;
+}
+.media-links div {
+	padding-top: 15px;
+	color: white;
+}
+
+
+.fab {
+	font-size: x-large;
+	color: white;
+	cursor: pointer;
+}
+
+.list li:hover {
+	color: white;
+	cursor: pointer;
+}
+@media (max-width: 672px) {
+	.wrapper {
+		display: block;
+	}
+    h4{
+    align-items: left;}
+}
